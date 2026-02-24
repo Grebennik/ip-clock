@@ -18,20 +18,24 @@ class IpClock implements ClockInterface
     private ?string $ip;
     private ClientInterface $httpClient;
     private ?string $apiUrl;
+    private ResponseParserInterface $parser;
 
     /**
      * @param string|null $ip The IP address to get the time for. If null, the server's external IP is used.
      * @param ClientInterface|null $httpClient Custom HTTP client.
      * @param string|null $apiUrl Custom API URL (should follow worldtimeapi.org format).
+     * @param ResponseParserInterface|null $parser Custom API response parser.
      */
     public function __construct(
         ?string $ip = null,
         ?ClientInterface $httpClient = null,
-        ?string $apiUrl = null
+        ?string $apiUrl = null,
+        ?ResponseParserInterface $parser = null
     ) {
         $this->ip = $ip;
         $this->httpClient = $httpClient ?? new Client(['timeout' => 5.0]);
         $this->apiUrl = $apiUrl ?? self::DEFAULT_API_URL;
+        $this->parser = $parser ?? new DefaultResponseParser();
     }
 
     /**
@@ -50,14 +54,7 @@ class IpClock implements ClockInterface
             $response = $this->httpClient->request('GET', $url);
             $data = json_decode($response->getBody()->getContents(), true);
 
-            if (!isset($data['datetime']) || !isset($data['timezone'])) {
-                throw new RuntimeException('Invalid response from Time API');
-            }
-
-            $timezone = new DateTimeZone($data['timezone']);
-            $datetime = new DateTimeImmutable($data['datetime']);
-            
-            return $datetime->setTimezone($timezone);
+            return $this->parser->parse($data);
         } catch (\Throwable $e) {
             throw new RuntimeException('Failed to retrieve time from API: ' . $e->getMessage(), 0, $e);
         }

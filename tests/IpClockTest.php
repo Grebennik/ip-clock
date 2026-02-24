@@ -4,6 +4,7 @@ namespace Mhrebinnyk\IpClock\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Mhrebinnyk\IpClock\IpClock;
+use Mhrebinnyk\IpClock\ResponseParserInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Clock\ClockInterface;
@@ -36,6 +37,27 @@ class IpClockTest extends TestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $now);
         $this->assertEquals('2023-10-27T10:00:00+00:00', $now->format('c'));
         $this->assertStringContainsString('UTC', $now->getTimezone()->getName() === 'Z' ? 'UTC' : $now->getTimezone()->getName());
+    }
+
+    public function testNowUsesCustomParser()
+    {
+        $mockBody = json_encode(['foo' => 'bar']);
+        $expectedTime = new DateTimeImmutable('2024-01-01T12:00:00+01:00');
+
+        $httpClient = $this->createMock(ClientInterface::class);
+        $httpClient->method('request')
+            ->willReturn(new Response(200, [], $mockBody));
+
+        $parser = $this->createMock(ResponseParserInterface::class);
+        $parser->expects($this->once())
+            ->method('parse')
+            ->with(['foo' => 'bar'])
+            ->willReturn($expectedTime);
+
+        $clock = new IpClock(null, $httpClient, null, $parser);
+        $now = $clock->now();
+
+        $this->assertSame($expectedTime, $now);
     }
 
     public function testNowUsesProvidedIp()
