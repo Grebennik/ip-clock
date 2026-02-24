@@ -56,6 +56,44 @@ echo "Time for 8.8.8.8: " . $now->format('H:i:s');
 
 By default, the package uses [WorldTimeAPI](http://worldtimeapi.org/). This service is free and does not require an API key.
 
+### Using Authenticated APIs (API Keys)
+
+Many commercial time/IP services (like IpStack, AbstractAPI, etc.) require an API key. You can provide it in two ways depending on the API requirements:
+
+#### Option 1: Via Headers (Recommended)
+
+If the service expects the key in a header (e.g., `X-API-Key` or `Authorization`), pass a pre-configured Guzzle client:
+
+```php
+use Grebennik\IpClock\IpClock;
+use GuzzleHttp\Client;
+
+$client = new Client([
+    'headers' => [
+        'X-API-Key' => 'your_secret_key_here'
+    ]
+]);
+
+$clock = new IpClock(httpClient: $client, apiUrl: 'https://api.example.com/time');
+```
+
+#### Option 2: Via Query Parameters
+
+If the key must be in the URL, use the `{ip}` placeholder to define where the IP address should be inserted:
+
+```php
+use Grebennik\IpClock\IpClock;
+
+// The {ip} placeholder will be replaced with the actual IP address
+$apiUrl = 'https://api.example.com/time?key=your_secret_key&ip={ip}';
+
+$clock = new IpClock(
+    ip: '8.8.8.8',
+    apiUrl: $apiUrl,
+    parser: new MyCustomParser()
+);
+```
+
 ### Custom API and Response Parsing
 
 If you use a different API that returns data in a different format, you can implement `ResponseParserInterface` and pass it to the constructor:

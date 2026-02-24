@@ -1,6 +1,6 @@
 {
     "name": "grebennik/ip-clock",
-    "version": "0.1.1",
+    "version": "0.1.4",
     "description": "A PSR-20 Clock implementation that returns time based on server external IP address using external API.",
     "type": "library",
     "license": "MIT",

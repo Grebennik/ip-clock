@@ -23,7 +23,7 @@ class IpClock implements ClockInterface
     /**
      * @param string|null $ip The IP address to get the time for. If null, the server's external IP is used.
      * @param ClientInterface|null $httpClient Custom HTTP client.
-     * @param string|null $apiUrl Custom API URL (should follow worldtimeapi.org format).
+     * @param string|null $apiUrl Custom API URL.
      * @param ResponseParserInterface|null $parser Custom API response parser.
      */
     public function __construct(
@@ -48,7 +48,15 @@ class IpClock implements ClockInterface
         try {
             $url = $this->apiUrl;
             if ($this->ip) {
-                $url = rtrim($url, '/') . '/' . $this->ip;
+                if (str_contains($url, '{ip}')) {
+                    $url = str_replace('{ip}', urlencode($this->ip), $url);
+                } else {
+                    $url = rtrim($url, '/') . '/' . $this->ip;
+                }
+            } else {
+                // If ip is not provided, we remove the placeholder if it exists (for some APIs like worldtimeapi/ip)
+                $url = str_replace('{ip}', '', $url);
+                $url = rtrim($url, '/');
             }
 
             $response = $this->httpClient->request('GET', $url);

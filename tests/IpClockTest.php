@@ -80,6 +80,49 @@ class IpClockTest extends TestCase
         $this->assertEquals($ip, $clock->getIp());
     }
 
+    public function testNowUsesUrlPlaceholder()
+    {
+        $ip = '1.2.3.4';
+        $apiUrl = 'https://api.test/v1/time?ip={ip}&key=secret';
+        $expectedUrl = 'https://api.test/v1/time?ip=1.2.3.4&key=secret';
+        
+        $mockBody = json_encode([
+            'datetime' => '2023-10-27T10:00:00Z',
+            'timezone' => 'UTC'
+        ]);
+
+        $httpClient = $this->createMock(ClientInterface::class);
+        $httpClient->method('request')
+            ->with('GET', $expectedUrl)
+            ->willReturn(new Response(200, [], $mockBody));
+
+        $clock = new IpClock($ip, $httpClient, $apiUrl);
+        $clock->now();
+        
+        $this->assertTrue(true); // Verification via $httpClient->method('request')->with(...)
+    }
+
+    public function testNowRemovesPlaceholderWhenNoIpProvided()
+    {
+        $apiUrl = 'https://api.test/v1/ip/{ip}';
+        $expectedUrl = 'https://api.test/v1/ip';
+        
+        $mockBody = json_encode([
+            'datetime' => '2023-10-27T10:00:00Z',
+            'timezone' => 'UTC'
+        ]);
+
+        $httpClient = $this->createMock(ClientInterface::class);
+        $httpClient->method('request')
+            ->with('GET', $expectedUrl)
+            ->willReturn(new Response(200, [], $mockBody));
+
+        $clock = new IpClock(null, $httpClient, $apiUrl);
+        $clock->now();
+        
+        $this->assertTrue(true);
+    }
+
     public function testThrowsExceptionOnApiError()
     {
         $httpClient = $this->createMock(ClientInterface::class);
