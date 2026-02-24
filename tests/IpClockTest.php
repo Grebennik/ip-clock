@@ -1,10 +1,10 @@
 <?php
 
-namespace Mhrebinnyk\IpClock\Tests;
+namespace Grebennik\IpClock\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Mhrebinnyk\IpClock\IpClock;
-use Mhrebinnyk\IpClock\ResponseParserInterface;
+use Grebennik\IpClock\IpClock;
+use Grebennik\IpClock\ResponseParserInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Clock\ClockInterface;

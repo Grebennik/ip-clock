@@ -12,7 +12,7 @@ A Composer package that returns accurate time and timezone based on a server’s
 Install the package via Composer:
 
 ```bash
-composer require mhrebinnyk/ip-clock
+composer require grebennik/ip-clock
 ```
 
 *Note: If the package is not yet published on Packagist, add a VCS repository to your `composer.json`:*
@@ -33,7 +33,7 @@ composer require mhrebinnyk/ip-clock
 ### Automatically use the server’s external IP
 
 ```php
-use Mhrebinnyk\IpClock\IpClock;
+use Grebennik\IpClock\IpClock;
 
 $clock = new IpClock();
 $now = $clock->now(); // Returns DateTimeImmutable
@@ -44,7 +44,7 @@ echo $now->format('Y-m-d H:i:s P');
 ### Use a specific IP address
 
 ```php
-use Mhrebinnyk\IpClock\IpClock;
+use Grebennik\IpClock\IpClock;
 
 $clock = new IpClock('8.8.8.8');
 $now = $clock->now();
@@ -61,8 +61,8 @@ By default, the package uses [WorldTimeAPI](http://worldtimeapi.org/). This serv
 If you use a different API that returns data in a different format, you can implement `ResponseParserInterface` and pass it to the constructor:
 
 ```php
-use Mhrebinnyk\IpClock\IpClock;
-use Mhrebinnyk\IpClock\ResponseParserInterface;
+use Grebennik\IpClock\IpClock;
+use Grebennik\IpClock\ResponseParserInterface;
 use DateTimeImmutable;
 
 class MyCustomParser implements ResponseParserInterface 

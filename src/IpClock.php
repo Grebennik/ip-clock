@@ -1,6 +1,6 @@
 <?php
 
-namespace Mhrebinnyk\IpClock;
+namespace Grebennik\IpClock;
 
 use Psr\Clock\ClockInterface;
 use DateTimeImmutable;

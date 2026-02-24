@@ -1,5 +1,5 @@
 {
-    "name": "mhrebinnyk/ip-clock",
+    "name": "grebennik/ip-clock",
     "version": "0.1.1",
     "description": "A PSR-20 Clock implementation that returns time based on server external IP address using external API.",
     "type": "library",
@@ -20,12 +20,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Mhrebinnyk\\IpClock\\": "src/"
+            "Grebennik\\IpClock\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Mhrebinnyk\\IpClock\\Tests\\": "tests/"
+            "Grebennik\\IpClock\\Tests\\": "tests/"
         }
     },
     "config": {

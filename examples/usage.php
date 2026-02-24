@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Mhrebinnyk\IpClock\IpClock;
+use Grebennik\IpClock\IpClock;
 
 // Example 1: Use server's external IP automatically
 $clock = new IpClock();
